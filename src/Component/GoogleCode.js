@@ -20,6 +20,7 @@ export default function GoogleCode () {
             
             window.sessionStorage.setItem("userId", res.data.id);
             window.sessionStorage.setItem("nickName", res.data.nickName);
+            window.sessionStorage.setItem("userEmail",res.data.userEmail);
 
             setTimeout(() => {
                 window.location.href="../../../MainPage";

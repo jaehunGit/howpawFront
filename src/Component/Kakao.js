@@ -26,8 +26,11 @@ export default function Kakao(props) {
 
             let userNickName = res.data.nickName;
 
+            let userEmail = res.data.userEmail;
+
             window.sessionStorage.setItem("userId", userId);
             window.sessionStorage.setItem("nickName", userNickName);
+            window.sessionStorage.setItem("userEmail",userEmail);
 
 
             setTimeout(() => {

@@ -51,7 +51,6 @@ export default function App(props) {
   const ID = window.sessionStorage.getItem("userId");
   const NICKNAME = window.sessionStorage.getItem("nickName");
 
-
   const loginState = () => {
     
     if (NICKNAME !== null) {
@@ -81,7 +80,10 @@ export default function App(props) {
       myPage.current.style.display="none";
       logoutButton.current.style.display="none";
     }
-    window.location.reload();
+    
+    setTimeout(() => {
+      window.location.href = "MainPage";
+    }, 100);
   }
 
   
@@ -184,7 +186,7 @@ export default function App(props) {
         overflow: "auto",
         minWidth: "1900px",
         maxWidth: "100%", 
-        minHeight: "969px",
+        minHeight: "1200px",
         maxHeight: "100%",
       }} >
         <AppBar position="static"

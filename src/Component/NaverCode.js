@@ -22,6 +22,7 @@ export default function GoogleCode () {
 
             window.sessionStorage.setItem("userId", userId);
             window.sessionStorage.setItem("nickName", userNickName);
+            window.sessionStorage.setItem("userEmail",res.data.userEmail);
 
 
             setTimeout(() => {

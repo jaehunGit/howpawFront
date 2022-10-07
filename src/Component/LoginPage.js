@@ -25,8 +25,14 @@ export default function LoginPage(props) {
 
     const navigate = useNavigate();
 
+    const checkLogin = () => {
+        if ( window.sessionStorage.getItem("userId") != null ) {
+            navigate("/MainPage");
+        }
+    }
+
     React.useEffect(() => {
-        // init
+        checkLogin();
     }, []);
 
     
@@ -40,6 +46,7 @@ export default function LoginPage(props) {
         .then( res => {
             window.sessionStorage.setItem("userId", userID);
             window.sessionStorage.setItem("nickName", res.data.nickName);
+            window.sessionStorage.setItem("userEmail", res.data.userEmail);
             console.log(res);
 
             setTimeout(() => {

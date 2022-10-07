@@ -23,7 +23,6 @@ export default function ProductFilterPage(props) {
     axios.post("/api/GetProduct")
     .then(res => {
       setProductInfo(res.data);
-      
     })
     .catch( err => console.log(err))
   },[]);

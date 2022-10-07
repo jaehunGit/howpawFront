@@ -33,6 +33,8 @@ export default function SignUpPage(props) {
   const [checktPassword, setCheckPassword] = React.useState(false);
   const [checkEmailText, setCheckEmailText] = React.useState("");
   const [time, setTime] = React.useState(299);
+  const [authEmailText, setAuthEmailText] = React.useState("이메일 인증");
+
 
   const checkNumberBox = useRef(null);
   const checkUserId = useRef(null);
@@ -40,6 +42,7 @@ export default function SignUpPage(props) {
   const userIdTextField = useRef(null);
   const checkIdConfirm = useRef(null);
   const checkPasswordConfirm = useRef(null);
+  const authEmailButton = useRef(null);
 
   
   const styles = {
@@ -61,8 +64,14 @@ export default function SignUpPage(props) {
 
   };
 
+  const checkLogin = () => {
+    if ( window.sessionStorage.getItem("userId") != null ) {
+        navigate("/MainPage");
+    }
+  }
+
   React.useEffect(() => {
-    // init
+    checkLogin();
   }, []);
   
   const navigate = useNavigate();
@@ -182,7 +191,11 @@ export default function SignUpPage(props) {
       requestCode :checkNumber,
       email: userEmail } })
     .then( res => {
-      console.log(res.data.message);
+      authEmailButton.current.disabled = false;
+      setAuthEmailText("인증 완료");
+
+      authEmailButton.current.style.marginLeft = "35px";
+
       setCheckEmailText("인증 완료되었습니다.");
       checkNumberBox.current.style.display ="none";
     })
@@ -247,7 +260,7 @@ export default function SignUpPage(props) {
                     { isUserPasswordSame ? <div style={{marginLeft: 10, marginTop: 5, color: "#8f8c8b"}}>비밀번호가 일치합니다.</div> : <div style={{marginLeft: 60, marginTop: 5, color: "#ff2727"}}>비밀번호가 일치하지 않습니다. </div> }
                   </div>
                   <TextField placeholder='이메일' style={{marginTop: 10, marginLeft: 60}} onChange={e => setUserEmail(e.target.value)}/>
-                  <Button type="submit" variant="contained" style={{ marginTop: 20, marginLeft: 20 }} onClick={() => onClickSendMail()}>이메일 인증</Button>
+                  <Button ref={authEmailButton} type="submit" variant="contained" style={{ marginTop: 20, marginLeft: 20 }} onClick={() => onClickSendMail()}>{authEmailText}</Button>
                   <br/>
                   <div ref={checkNumberBox} style={{display: "none"}}>
                     <TextField placeholder='인증번호를 입력하세요' style={{marginTop: 10, marginLeft: 78}} onChange={e => setCheckNumber(e.target.value)}/>

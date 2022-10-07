@@ -156,28 +156,28 @@ export default function AddProductPage(props) {
         }
     };
 
-    const [productName, inputProductName] = React.useState("");
-    const [productPrice, inputProductPrice] = React.useState("");
-    const [brandName, inputBrandName] = React.useState("");
-    const [origin, inputOrigin] = React.useState("");
-    const [weight, inputWeight] = React.useState("");
-    const [productLink, inputProductLink] = React.useState("");
-    const [bestReview, inputBestReview] = React.useState("");
-    const [worstReview, inputWorstReview] = React.useState("");
+    const [productName, inputProductName] = React.useState(null);
+    const [productPrice, inputProductPrice] = React.useState(null);
+    const [brandName, inputBrandName] = React.useState(null);
+    const [origin, inputOrigin] = React.useState(null);
+    const [weight, inputWeight] = React.useState(null);
+    const [productLink, inputProductLink] = React.useState(null);
+    const [bestReview, inputBestReview] = React.useState(null);
+    const [worstReview, inputWorstReview] = React.useState(null);
     const [mainImg, inputMainImg] = React.useState("./Image/InputImageDefault.png");
     const [detailImg, inputDetailImg] = React.useState("./Image/InputImageDefault.png");
     const [bestReviewImg, inputBestReviewImg] = React.useState("./Image/InputImageDefault.png");
     const [worstReviewImg, inputWorstReviewImg] = React.useState("./Image/InputImageDefault.png");
-    const [bestValue, bestSetValue] = React.useState(0);
-    const [worstValue, worstSetValue] = React.useState(0);
+    const [bestValue, bestSetValue] = React.useState(null);
+    const [worstValue, worstSetValue] = React.useState(null);
     const [kind, inputKind] = React.useState("dog");
-    const [type, inputType] = React.useState("");
-    const [mainImageForm, getMainImageForm] = React.useState();
-    const [detailImageForm, getDetailImageForm] = React.useState();
-    const [bestReviewImageForm, getbestReviewImageForm] = React.useState();
-    const [worstReviewImageForm, getworstReviewImageForm] = React.useState();
+    const [type, inputType] = React.useState(null);
+    const [mainImageForm, getMainImageForm] = React.useState(null);
+    const [detailImageForm, getDetailImageForm] = React.useState(null);
+    const [bestReviewImageForm, getbestReviewImageForm] = React.useState(null);
+    const [worstReviewImageForm, getworstReviewImageForm] = React.useState(null);
     const [imageFilePath, setImageFilePath] = React.useState([]);
-
+    
     const mainImgInput = useRef(null);
     const detailImgInput = useRef(null);
     const bestReviewImgInput = useRef(null);
@@ -334,67 +334,89 @@ export default function AddProductPage(props) {
     }
 
     const submitHander = async (e) => {
-        e.preventDefault();
+
+        if ( type == null ) {
+            alert("카테고리를 선택해주세요.");
+        } else if (productName == null) {
+            alert("상품명을 입력해주세요.");
+        } else if (productPrice == null ) {
+            alert("상품 가격을 입력해주세요.");
+        } else if ( brandName == null ) {
+            alert("브랜드명을 입력해주세요.");
+        } else if ( origin == null ) {
+            alert("원산지를 입력해주세요.");
+        } else if ( weight == null ) {
+            alert("상품의 무게를 입력해주세요.");
+        } else if ( productLink == null ) {
+            alert("상품의 판매처 링크를 입력해주세요.");
+        } else if ( bestReview == null || worstReview == null ) {
+            alert("상품의 리뷰를 입력해주세요.");
+        } else if ( bestValue == null || worstValue == null ) {
+            alert("상품의 평접을 입력해주세요.");
+        } else if (mainImageForm == null || detailImageForm == null || bestReviewImageForm == null || worstReviewImageForm == null ) {
+            alert("상품 이미지는 4개 모두 등록해야 합니다.");
+        } else {
+            
+            e.preventDefault();
     
-        let postType = "";
-        
-        mainImageFormData.append('mainImageFile', mainImageForm);
-        mainImageFormData.append('detailImageFile', detailImageForm);
-        mainImageFormData.append('bestReviewImageFile', bestReviewImageForm);
-        mainImageFormData.append('worstReviewImageFile', worstReviewImageForm);
+            let postType = "";
+            
+            mainImageFormData.append('mainImageFile', mainImageForm);
+            mainImageFormData.append('detailImageFile', detailImageForm);
+            mainImageFormData.append('bestReviewImageFile', bestReviewImageForm);
+            mainImageFormData.append('worstReviewImageFile', worstReviewImageForm);
 
-        if (type < 10) {
-            postType = String(categoryEnum.FOOD + "," + type); 
-        }
-        else if(type>10) {
-            postType = categoryEnum.SNACKS + "," + type; 
-        }
-
-        const config = {
-            headers: {
-                'content-type': 'multipart/form-data'
+            if (type < 10) {
+                postType = String(categoryEnum.FOOD + "," + type); 
             }
-        }
-        
-        await axios.post("/api/SaveImage", mainImageFormData, config)
-        .then(res => {
-            console.log(res.data);
-            axios.post("/api/AddProduct",{
-                productName: productName,
-                productPrice: productPrice,
-                brandName: brandName,
-                origin: origin,
-                bestRating: bestValue,
-                worstRating: worstValue,
-                bestReviewText: bestReview,
-                worstReviewText: worstReview,
-                productWeight: weight,
-                productLink: productLink,
-                kind: kind,
-                productType: postType,
-                mainImageRoute: res.data[0],
-                detailImageRoute: res.data[1],
-                bestImageRoute: res.data[2],
-                worstImageRoute: res.data[3]
-            })
-            .then( res => { 
-                alert("상품 등록 성공");
-                navigate("/mainPage");
-            })
-            .catch( err => { 
-                console.log(err); }) 
-        })
-        .catch(err => {
-            console.log(err);
-        })
+            else if(type>10) {
+                postType = categoryEnum.SNACKS + "," + type; 
+            }
 
-        
+            const config = {
+                headers: {
+                    'content-type': 'multipart/form-data'
+                }
+            }
+            
+            await axios.post("/api/SaveImage", mainImageFormData, config)
+            .then(res => {
+                console.log(res.data);
+                axios.post("/api/AddProduct",{
+                    productName: productName,
+                    productPrice: productPrice,
+                    brandName: brandName,
+                    origin: origin,
+                    bestRating: bestValue,
+                    worstRating: worstValue,
+                    bestReviewText: bestReview,
+                    worstReviewText: worstReview,
+                    productWeight: weight,
+                    productLink: productLink,
+                    kind: kind,
+                    productType: postType,
+                    mainImageRoute: res.data[0],
+                    detailImageRoute: res.data[1],
+                    bestImageRoute: res.data[2],
+                    worstImageRoute: res.data[3]
+                })
+                .then( res => { 
+                    alert("상품 등록 성공");
+                    navigate("/mainPage");
+                })
+                .catch( err => { 
+                    console.log(err); }) 
+            })
+            .catch(err => {
+                console.log(err);
+            })
+        }
     }
 
     return (
         <Box style={styles.add_product_bigbox}>
             <h3 style={styles.add_product_text}>[상품 추가]</h3>
-            <form method="post" onSubmit={submitHander}>
+            <form method="post">
                 <div style={styles.add_proudct_sec}>
                     <div style={{width: "1000px", height: "150px"  }}>
                         <div style={{ width: "150px", height: "150px", display: "inline-block", position: "relative", top: "0px", borderBottom: "1px solid #5e6c81", lineHeight: "150px", textAlign: "center", backgroundColor: "#f0f7ff", color: "#233756",}}>
@@ -430,16 +452,6 @@ export default function AddProductPage(props) {
                                     <MenuItem value={categoryEnum.CHURU_SNACKS}>츄르 간식</MenuItem>
                                     <MenuItem value={categoryEnum.TREATS_SNACKS}>트릿 간식</MenuItem>
                                     <MenuItem value={categoryEnum.OTEHR_SANCKS}>기타</MenuItem>
-                                    <ListSubheader value="snackType" style={{ fontWeight: "bold", color: "black"}}>옷</ListSubheader>
-                                    <MenuItem value="tshirt">티셔츠</MenuItem>
-                                    <MenuItem value="hood">후드</MenuItem>
-                                    <MenuItem value="manToMan">맨투맨</MenuItem>
-                                    <MenuItem value="onePiece">원피스</MenuItem>
-                                    <MenuItem value="otherClothes">기타</MenuItem>
-                                    <ListSubheader value="dogWalkingSuppliesType" style={{ fontWeight: "bold", color: "black"}}>산책 용품</ListSubheader>
-                                    <MenuItem value="leadRope">리드줄</MenuItem>
-                                    <MenuItem value="defecationPouch">똥츄</MenuItem>
-                                    <MenuItem value="otherDogWalkSupplies">기타</MenuItem>
                                 </Select>
                             </FormControl>
                         </div>
@@ -529,7 +541,7 @@ export default function AddProductPage(props) {
                         </div>
                     </div>
                 </div>
-                <Button type="submit" variant="contained" style={styles.submit_button}>상품 등록하기</Button>
+                <Button onClick={(e) => submitHander(e)} variant="contained" style={styles.submit_button}>상품 등록하기</Button>
             </form>
         </Box>
     );

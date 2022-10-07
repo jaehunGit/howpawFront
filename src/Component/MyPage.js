@@ -4,7 +4,7 @@ import axios from "axios";
 import { useEffect } from 'react';
 import { useRef } from 'react';
 
-import { Button } from '@mui/material';
+import { Button, ImageList, ImageListItem, ImageListItemBar, Typography } from '@mui/material';
 import { TextField } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
@@ -32,7 +32,7 @@ export default function Mypage(props) {
     //
     const [favoriteCount, setFavoriteCount] = React.useState(0);
     const [test1, test2] = React.useState(false);
-    const [test3, test4] = React.useState(false);
+    const [favoriteBox, setFavoriteBox] = React.useState(false);
     const [hoho, haha] = React.useState({});
     const [length, setLength] = React.useState(0);
     //
@@ -45,9 +45,10 @@ export default function Mypage(props) {
     const [petTypeUpdata,setPetTypeUpdata] = React.useState("");
     const [petKindUpdata,setPetKindUpdata] = React.useState("");
     const [msg, setMSG] = React.useState("");
+    const [productArr, setProductArr] = React.useState([]);
     //
 
-    let ID = window.sessionStorage.getItem("ID");
+    //let ID = window.sessionStorage.getItem("ID");
     let level = window.sessionStorage.getItem("level");
     let userPassword = window.sessionStorage.getItem("userPassword");
     let name = window.sessionStorage.getItem("name");
@@ -77,14 +78,24 @@ export default function Mypage(props) {
 
         }
     };
+    const ID = window.sessionStorage.getItem("nickName");
+
+    const checkLogin = () => {
+        if ( window.sessionStorage.getItem("userId") != null ) {
+            navigate("/MainPage");
+        }
+    }
+
+    
     
     useEffect( () => {
-        getFavoriteCount();
+        checkLogin();
         userLoginInfo();
+        getFavoriteCount();
     },[]);
 
     const userLoginInfo = () => {
-        const ID = window.sessionStorage.getItem("userId");
+        
         const level = window.sessionStorage.getItem("level");
         const userPassword = window.sessionStorage.getItem("userPassword");
         const name = window.sessionStorage.getItem("name");
@@ -106,18 +117,7 @@ export default function Mypage(props) {
                     contentType: "application/json; UTF-8;",
                     
                 } 
-            } else if (level === "2") {
-                formData = {
-                    userID: ID, 
-                    level: level,
-                    userPassword: userPasswordUpdata,
-                    cellphoneNumber: cellphoneNumberUpdata,
-                    companyName: companyNameUpdata,
-                    businessName: businessNameUpdata,
-                    companyNumber: companyNumberUpdata,
-                    contentType: "application/json; UTF-8;",
-                } 
-            }
+            } 
             console.log(nameUpdata);
             console.log(cellphoneNumberUpdata);
         const response = await axios.post("/api/userInfoChange", formData);
@@ -132,34 +132,15 @@ export default function Mypage(props) {
         };
 
     const getFavoriteCount = () => {
-        axios.get("/api/GetFavoriteCount", {params: {userId: window.sessionStorage.getItem("userId")}})
-        .then( res => {
-            const body = res.data;
-            
-            setFavoriteCount(body.split(",").length);
-            
-            getImageRoute(body.split(","), body.split(",").length);
-            
-        })
-        .catch( err => console.log(err))
-    }
-
-    const getImageRoute = (favoritePdcNumber, count) => {
-        
-        let result = JSON.stringify(favoritePdcNumber);
-        result = result.replace("[", "");
-        result = result.replace(/"/gi, "");
-        result = result.replace("]", "");
-    
-
-        axios.post("/api/GetImageRoute", { pdcNumber: result, count: count})
+        axios.get("/api/GetFavorite", {params: {userId: window.sessionStorage.getItem("userId")}})
         .then( res => {
             const body = res.data;
 
-            haha(body.data);
-            setLength(body.data.length);
-            console.log(body.data[0].split(","));
-            console.log(body.data[1].split(","));
+            setFavoriteCount(body.productCount);
+
+            console.log(body.productArr);
+
+            setProductArr(body.productArr);
         })
         .catch( err => console.log(err))
     }
@@ -186,13 +167,8 @@ export default function Mypage(props) {
         );
     }
 
-    const onClickFavorite = () => {
-
-    }
-
     const userInfo = () => {
         
-        if (level === "1") {
             return (
                 <Box style={{width: "1000px", height: "600px", border: "1px solid black", marginTop: "150px", textAlign:"Left"}}>
                     <div style={{marginLeft:"10px", marginTop:"10px"}}>
@@ -224,37 +200,7 @@ export default function Mypage(props) {
                         </Button>
                     </div>
                 </Box>
-                )
-        }
-        
-        if (level === "2") {
-            return (
-                <Box style={{width: "1000px", height: "600px", border: "1px solid black", marginTop: "150px", textAlign:"Left"}}>
-                    <div style={{marginLeft:"10px", marginTop:"10px"}}>
-                    <div style={{fontSize:"32px" }}>회원정보</div><br/><br/><br/>
-                    <div style={{fontSize:"24px" }}>기본정보</div><br/><br/><br/>
-                    </div>
-                    <div style={{display: "inline-block", marginLeft:"10px"}}>
-                    <div style={{fontSize:"16px", color: 'gray'}}>기본정보</div>
-                        <div style={{fontSize:"16px",marginLeft: "10px" }}>{`${ID}`}</div>
-                        <br/><br/>
-                        <div style={{fontSize:"16px", color: 'gray'}}>이메일</div>
-                        <div style={{fontSize:"16px", marginLeft: "26px" }}>{`${userEmail}`}</div><br/><br/>
-                        <div style={{fontSize:"16px", color: 'gray'}}>휴대전화</div>
-                        <div style={{fontSize:"16px", marginLeft: "10px" }}>{`${cellphoneNumber}`}</div><br/><br/>
-                        <div style={{fontSize:"16px", color: 'gray'}}>회사이름</div>
-                        <div style={{fontSize:"16px", marginLeft: "10px" }}>{`${companyName}`}</div>
-                    </div>
-                    <div style={{position:"relative",top:"-126px",display: "inline-block", marginLeft: "5px"}}>
-                        <Button style={{width:18, height:18}} onClick={()=>{setUserInfoConfirm(!userInfoConfirm);setUserConfirm(!userConfirm)}}>
-                            수정 
-                        </Button>
-                    </div>
-                </Box>
             )
-        }
-
-        
        
     } 
 
@@ -303,9 +249,6 @@ export default function Mypage(props) {
     
 
     const userInfoUpdata = () => {
-        
-        if (level === "1") {
-            
             return (
                 <div style={{width: "1000px", height: "600px", border: "1px solid black", marginTop: "150px", margin: "auto", textAlign:"center"}}>
                     <div style={{marginTop: "10px",marginRight: "190px" ,fontSize:"16px" }}>이름</div><br/>
@@ -324,31 +267,6 @@ export default function Mypage(props) {
                         <text> {msg} </text> 
                 </div>
             )
-        }
-
-        if (level === "2") {
-
-            return (
-                <div style={{width: "1000px", height: "600px", border: "1px solid black", marginTop: "150px", margin: "auto", textAlign:"center"}}>
-                    <div style={{marginTop: "10px",marginRight: "190px" ,fontSize:"16px" }}>회사정보</div><br/>
-                    <TextField placeholder='회사이름을 입력하세요' onChange={e=> setCompanyNameUpdata(e.target.value)}/><br/>
-                    <TextField placeholder='사업자명을 입력하세요' onChange={e=> setBusinessNameUpdata(e.target.value)}/><br/>
-                    <TextField placeholder='사업자번호를 입력하세요' onChange={e=> setCompanyNumberUpdata(e.target.value)}/><br/><br/>
-                    <div style={{marginRight: "155px" ,fontSize:"16px" }}>비밀번호</div><br/>
-                    <TextField placeholder='현재 비밀번호' onChange={e=>passwordconfirm(e)}/><br/>
-                    { isUserPasswordSame ? <div style={{marginLeft: -50}}>비밀번호가 일치합니다.</div> : <div style={{marginLeft: 5}}>비밀번호가 일치하지 않습니다 . </div> }<br/>
-                    <TextField value={userPasswordUpdata}placeholder='새로운 비밀번호' onChange={e => OnChangeUserPasswordUpdata(e.target.value)}/><br/>
-                    <TextField value={userPasswordUpdataConfirm}placeholder='비밀번호 확인' onChange={(e) => PasswordConfirm(e.target.value, userPasswordUpdata)}/><br/>
-                    { isUserPasswordSameUpdata ? <div style={{marginLeft: -50}}>비밀번호가 일치합니다.</div> : <div style={{marginLeft: 5}}>비밀번호가 일치하지 않습니다 . </div> }<br/><br/>
-                    <div style={{marginRight: "140px",fontSize:"16px" }}>휴대폰번호</div><br/>
-                    <TextField placeholder='휴대폰번호를 입력하세요' onChange={e => setCellphoneNumberUpdata(e.target.value)}/><br/><br/>
-                    <Button type = "submit" onClick={()=>SellerCheckSignUpData()} disabled={!UserCheckSignUpData()}>
-                        수정
-                    </Button>
-                        <div> {msg} </div> 
-                </div>
-            )
-        }
     }
 
     
@@ -363,6 +281,33 @@ export default function Mypage(props) {
        
         setPetKindUpdata(event.target.value);
     };
+
+    const favoriteProduct = () => {
+        return (
+            <div style={{ widt: "1000px", height: "700px", border: "1px solid black", marginTop: "150px", margin: "auto"}}>
+                
+                <ImageList cols={3}>
+                    {productArr && productArr.map((item) => (
+                    <ImageListItem key={item[1]}>
+                        <img
+                        src={item[1].replace("../client/public", ".")}
+                        srcSet={item[1].replace("../client/public", ".")}
+                        alt={item[0]}
+                        loading="lazy"
+                        onClick={ (e) => {window.sessionStorage.setItem("productID", item[2]); window.sessionStorage.setItem("productType", item[4]); navigate("../Product");}}
+                        />
+                        <ImageListItemBar
+                        title={item[0]}
+                        subtitle={<span>판매처: {item[3]}</span>}
+                        position="bottom"
+                        />
+                    </ImageListItem>
+                    )
+                )}
+                </ImageList>
+            </div>
+        )
+    }
 
     
 
@@ -454,7 +399,7 @@ export default function Mypage(props) {
             userInfoConfirm(!userInfoConfirm);
         } else if(userPetInfoAdd === true) {
             userPetInfoAdd(!userPetInfoAdd);
-        }
+        } 
     }
 
 
@@ -470,7 +415,7 @@ export default function Mypage(props) {
                     <div style={{ width: "500px", height: "80px", borderLeft: "3px solid gray" ,position: "relative", left: "500px"}}>
                         <div style={{width: "100px", height: "80px", marginLeft: "40px", fontSize: "20px"}}>
                             관심
-                            <div onClick={() => {onClickFavorite(); test4(!test3)}} style={{ marginTop: "20px", cursor: "pointer"}}>
+                            <div onClick={() => {setFavoriteBox(!favoriteBox)}} style={{ marginTop: "20px", cursor: "pointer"}}>
                                 <img src='./Image/FavoriteBorder.png' style={{width: "26px", height: "24px", objectFit: "cover", display: "inline-block"}}></img>
                                 <div style={{ fontSize: "23px" ,color: "rgb(238,21,85)", fontWeight: "bold", display: "inline-block", position:"relative", top:"-5px", left: "10px"}}>{`${favoriteCount}`}</div>
                             </div>
@@ -485,6 +430,9 @@ export default function Mypage(props) {
                 </div>
                 <div>
                     {userPetInfoAdd ? petInfoAdd() : null}
+                </div>
+                <div>
+                    {favoriteBox ? favoriteProduct() : null}
                 </div>
             </div>
         </div>
