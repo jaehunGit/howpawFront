@@ -1,4 +1,4 @@
-# Springboot side project BackEnd ( Gradle + JPA + MariaDB + Redis + OAuth )
+# React side project
 
 **Summary : 회원가입 + 로그인 + 상품**
 
@@ -13,9 +13,8 @@
 - [x] Email 인증
 - [x] 관심 상품 추가, 제거
 - [x] KAKAO, GOOGLE, NAVER 로그인 api
-- [o] 마이페이지 관심 상품 api
+- [x] 마이페이지 관심 상품 api
 
 ## 사용한 툴 
 
-- Development tool : Intellij
-- DB tool : MariaDB, heidiSql
+- Development tool : VSCode
