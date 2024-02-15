@@ -13,7 +13,7 @@
 - [x] Email 인증
 - [x] 관심 상품 추가, 제거
 - [x] KAKAO, GOOGLE, NAVER 로그인 api
-- [O] 마이페이지 관심 상품 api
+- [o] 마이페이지 관심 상품 api
 
 ## 사용한 툴 
 
