@@ -2,6 +2,10 @@
 
 **Summary : 회원가입 + 로그인 + 상품**
 
+## 서버 저장소
+
+https://github.com/jaehunGit/howpawBack
+
 ## Features
 
 - [x] 회원가입
